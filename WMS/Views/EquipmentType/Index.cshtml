@@ -1,0 +1,78 @@
+﻿@model WMS.Models.EquipmentTypeVM
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<form asp-action="Index">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <input type="hidden" asp-for="Id" />
+
+    <div class="form-group">
+        <label asp-for="EquipmentName" class="control-label"></label>
+        <input asp-for="EquipmentName" class="form-control" />
+        <span asp-validation-for="EquipmentName" class="text-danger"></span>
+    </div>
+    <div class="form-row">
+        <div class="form-group col-md-6">
+            <input type="submit" value="Submit" class="btn btn-primary btn-block" />
+        </div>
+        <div class="col-md-6">
+            <a asp-action="Index" class="btn btn-secondary btn-block"><i class="fa fa-list"></i> Back to List</a>
+        </div>
+    </div>
+</form>
+  
+    <div class="mb-4 shadow-lg p-3 mb-5 bg-white rounded">
+        <div class="card-header">
+            <i class="fas fa-table mr-1"></i>
+            Areas
+        </div>
+
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>
+                                @Html.DisplayNameFor(model => model.EquipmentName)
+                            </th>
+
+                            <th>
+                                Actions
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.EquipmentNameList)
+                        {
+                            <tr>
+
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.EquipmentName)
+                                </td>
+
+                                <td>
+                                    <a asp-action="AddEdit" asp-route-id="@item.Id" class="btn btn-primary">
+                                        <i class="fa fa-pen" aria-hidden="true"></i>
+                                    </a>
+ 
+                                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger"
+                                       onclick="return confirm('Are you sure you want to Delete this record?')">
+                                        <i class="fa fa-trash" aria-hidden="true"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+
+    @section Scripts{
+        <script>
+
+        </script>
+    }

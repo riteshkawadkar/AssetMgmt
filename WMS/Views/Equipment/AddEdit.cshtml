@@ -1,0 +1,210 @@
+﻿@model WMS.Models.EquipmentVM
+
+@{
+    ViewData["Title"] = "AddEdit";
+}
+
+
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="AddEdit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Id" />
+
+            <div class="form-group">
+                <label asp-for="EquipmentName" class="control-label"></label>
+                <input asp-for="EquipmentName" class="form-control" />
+                <span asp-validation-for="EquipmentName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="LocationId" class="control-label"></label>
+                @Html.DropDownListFor(q => q.LocationId, new SelectList(Model.Locations, "Value", "Text"), "Select Location", new { @class = "form-control" })
+
+                <span asp-validation-for="LocationId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="FacilityId" class="control-label"></label>
+                @Html.DropDownListFor(q => q.FacilityId, new SelectList(Model.Facilities, "Value", "Text"), "Select Facility", new { @class = "form-control", id = "FacilityId" })
+
+                <span asp-validation-for="FacilityId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DepartmentId" class="control-label"></label>
+                @Html.DropDownListFor(q => q.DepartmentId, new SelectList(Model.Departmnets, "Value", "Text"), "Select Department", new { @class = "form-control", id = "DepartmentId" })
+
+                <span asp-validation-for="DepartmentId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="SubDepartmentId" class="control-label"></label>
+                @Html.DropDownListFor(q => q.SubDepartmentId, new SelectList(Model.SubDepartmnets, "Value", "Text"), "Select Sub-Department", new { @class = "form-control", id = "SubDepartmentId" })
+
+                <span asp-validation-for="SubDepartmentId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="AreaId" class="control-label"></label>
+                @Html.DropDownListFor(q => q.AreaId, new SelectList(Model.Areas, "Value", "Text"), "Select Area", new { @class = "form-control", id = "AreaId" })
+
+                <span asp-validation-for="AreaId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="RoomId" class="control-label"></label>
+                @Html.DropDownListFor(q => q.RoomId, new SelectList(Model.Rooms, "Value", "Text"), "Select Room", new { @class = "form-control", id = "RoomId" })
+
+                <span asp-validation-for="RoomId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="LineId" class="control-label"></label>
+                @Html.DropDownListFor(q => q.LineId, new SelectList(Model.Lines, "Value", "Text"), "Select Line", new { @class = "form-control", id = "LineId" })
+
+                <span asp-validation-for="LineId" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="EquipmentTypeId" class="control-label"></label>
+                @Html.DropDownListFor(q => q.EquipmentTypeId, new SelectList(Model.EquipmentTypes, "Value", "Text"), "Select Line", new { @class = "form-control", id = "EquipmentTypeId" })
+
+                <span asp-validation-for="EquipmentTypeId" class="text-danger"></span>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <input type="submit" value="Submit" class="btn btn-primary btn-block" />
+                </div>
+                <div class="col-md-6">
+                    <a asp-action="Index" class="btn btn-secondary btn-block"><i class="fa fa-list"></i> Back to List</a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var locationDDL = $("#LocationId")
+            var facilityDDL = $("#FacilityId")
+            var deptDDL = $("#DepartmentId")
+            var subdeptDDL = $("#SubDepartmentId")
+            var areaDDL = $("#areaId")
+            var roomDDL = $("#areaId")
+
+            facilityDDL.prop('disabled', true);
+            deptDDL.prop('disabled', true);
+            subdeptDDL.prop('disabled', true);
+            areaDDL.prop('disabled', true);
+            roomDDL.prop('disabled', true);
+
+
+            locationDDL.change(function () {
+                if ($(this).val() == "0") {
+                    facilityDDL.prop('disabled', true);
+                    facilityDDL.val("0");
+                }
+                else {
+
+                    $.ajax({
+                        url: "/api/rfacility/" + $(this).val(),
+                        method: "get",
+                        success: function (data) {
+                            facilityDDL.prop('disabled', false);
+                            facilityDDL.empty();
+                            facilityDDL.append($('<option/>', { value: '0', text: 'Select Facility' }));
+                            $(data).each(function (index, item) {
+                                facilityDDL.append($('<option/>', { value: item.id, text: item.facilityName }));
+                            });
+                        },
+                    });
+
+                }
+            });
+
+            facilityDDL.change(function () {
+                if ($(this).val() == "0") {
+                    deptDDL.prop('disabled', true);
+                    deptDDL.val("0");
+                }
+                else {
+
+                    $.ajax({
+                        url: "/api/rdepartment/" + $(this).val(),
+                        method: "get",
+                        success: function (data) {
+                            deptDDL.prop('disabled', false);
+                            deptDDL.empty();
+                            deptDDL.append($('<option/>', { value: '0', text: 'Select Department' }));
+                            $(data).each(function (index, item) {
+                                deptDDL.append($('<option/>', { value: item.id, text: item.departmentName }));
+                            });
+                        }
+                    });
+
+                }
+            });
+
+            deptDDL.change(function () {
+                if ($(this).val() == "0") {
+                    subdeptDDL.prop('disabled', true);
+                    subdeptDDL.val("0");
+
+                    areaDDL.prop('disabled', true);
+                    areaDDL.val("0");
+                }
+                else {
+
+                    $.ajax({
+                        url: "/api/rsubdepartment/" + $(this).val(),
+                        method: "get",
+                        success: function (data) {
+                            subdeptDDL.prop('disabled', false);
+                            subdeptDDL.empty();
+                            subdeptDDL.append($('<option/>', { value: '0', text: 'Select Sub-Department' }));
+                            $(data).each(function (index, item) {
+                                subdeptDDL.append($('<option/>', { value: item.id, text: item.subDepartmentName }));
+                            });
+                        }
+                    });
+                    $.ajax({
+                        url: "/api/rarea/" + $(this).val(),
+                        method: "get",
+                        success: function (data) {
+                            areaDDL.prop('disabled', false);
+                            areaDDL.empty();
+                            areaDDL.append($('<option/>', { value: '0', text: 'Select Area' }));
+                            $(data).each(function (index, item) {
+                                areaDDL.append($('<option/>', { value: item.id, text: item.areaName }));
+                            });
+                        }
+                    });
+                }
+            });
+
+            areaDDL.change(function () {
+                if ($(this).val() == "0") {
+                    roomDDL.prop('disabled', true);
+                    roomDDL.val("0");
+                }
+                else {
+
+                    $.ajax({
+                        url: "/api/rdepartment/" + $(this).val(),
+                        method: "get",
+                        success: function (data) {
+                            roomDDL.prop('disabled', false);
+                            roomDDL.empty();
+                            roomDDL.append($('<option/>', { value: '0', text: 'Select Room' }));
+                            $(data).each(function (index, item) {
+                                roomDDL.append($('<option/>', { value: item.id, text: item.roomName }));
+                            });
+                        }
+                    });
+
+                }
+            });
+
+        });
+    </script>
+}

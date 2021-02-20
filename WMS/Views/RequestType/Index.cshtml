@@ -1,0 +1,117 @@
+﻿@model RequestTypeVM
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+
+@*
+<form asp-action="Index">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <input type="hidden" asp-for="Id" />
+
+    <div class="form-group">
+        <label asp-for="RequestName" class="control-label"></label>
+        <input asp-for="RequestName" class="form-control" />
+        <span asp-validation-for="RequestName" class="text-danger"></span>
+    </div>
+    <div class="form-row">
+        <div class="form-group col-md-6">
+            <input type="submit" value="Submit" class="btn btn-primary btn-block" />
+        </div>
+        <div class="col-md-6">
+            <a asp-action="Index" class="btn btn-secondary btn-block"><i class="fa fa-list"></i> Back to List</a>
+        </div>
+    </div>
+</form>*@
+
+<form asp-action="Index">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <input type="hidden" asp-for="Id" />
+
+    <div class="mb-4 shadow-lg p-3 mb-5 bg-white rounded">
+        <div class="card-header">
+            <i class="fas fa-table mr-1"></i>
+            Areas
+        </div>
+
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>
+                                @Html.DisplayNameFor(model => model.RequestName)
+                            </th>
+                            @*@foreach (var item in Model.RoleNameList)
+                                {
+                                    <th>
+                                        Approvers
+                                    </th>
+                                }*@
+                            @for (int i = 1; i <= Model.RoleNameList.Count(); i++)
+                            {
+                                <th>
+                                    L @i Approvers
+                                </th>
+                            }
+                            <th>
+                                Actions
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.RequestNameList)
+                        {
+                            <tr>
+
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.RequestName)
+                                </td>
+
+                                @foreach (string value in item.Approvers.Split(','))
+                                {
+                                    <td>
+@*                                        @Html.DropDownList("RoleId", (IEnumerable<SelectListItem>)ViewBag.RolesList, "Select...", new { @class = "form-control dropdown-content", CssClass = "MyListBox", onchange = "SetDropDownListColor(this)" })
+*@                                        @value
+                                    </td>
+
+                                }
+
+
+                                <td>
+
+                                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-primary">
+                                        <i class="fa fa-check" aria-hidden="true"></i>
+                                        Edit/Update
+                                    </a>
+
+                                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger"
+                                       onclick="return confirm('Are you sure you want to Delete this record?')">
+                                        <i class="fa fa-trash" aria-hidden="true"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</form>
+
+@section Scripts{
+
+    <script type="text/javascript">
+        function SetDropDownListColor(ddl) {
+            for (var i = 0; i < ddl.options.length; i++) {
+                if (ddl.options[i].selected > -1) {
+                    ddl.style.backgroundColor = 'LightGreen';
+                }
+            }
+        }
+
+
+
+    </script>
+}

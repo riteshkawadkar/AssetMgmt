@@ -1,0 +1,89 @@
+﻿@model RequestTypeEditVM
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<form asp-action="Edit">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <input type="hidden" asp-for="Id" />
+
+    <div class="mb-4 shadow-lg p-3 mb-5 bg-white rounded">
+        <div class="card-header">
+            <i class="fas fa-table mr-1"></i>
+            Areas
+        </div>
+
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>
+                                @Html.DisplayNameFor(model => model.RequestName)
+                            </th>
+                            @*@foreach (var item in Model.RoleNameList)
+                                {
+                                    <th>
+                                        Approvers
+                                    </th>
+                                }*@
+                            @for (int i = 1; i <= Model.RoleNameList.Count(); i++)
+                            {
+                                <th>
+                                    L @i Approvers
+                                </th>
+                            }
+
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        <tr>
+
+                            <td>
+                                @ViewBag.RName
+                            </td>
+
+                            @for (int i = 1; i <= Model.RoleNameList.Count(); i++)
+                            {
+                                @if (Model.RoleApprovers.Count() <= i)
+                                {
+                                    <td>
+                                        @Html.DropDownList("RoleId", (IEnumerable<SelectListItem>)ViewBag.RolesList, "u", new { @class = "form-control dropdown-content", CssClass = "MyListBox", onchange = "SetDropDownListColor(this)" })
+                                    </td>
+                                }
+                                else
+                                {
+                                    <td>
+                                        @Html.DropDownList("RoleId", (IEnumerable<SelectListItem>)ViewBag.RolesList, "Select...", new { @class = "form-control dropdown-content", CssClass = "MyListBox", onchange = "SetDropDownListColor(this)" })
+                                    </td>
+                                }
+                            }
+
+                            
+
+                        </tr>
+                        
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</form>
+
+@section Scripts{
+
+    <script type="text/javascript">
+        function SetDropDownListColor(ddl) {
+            for (var i = 0; i < ddl.options.length; i++) {
+                if (ddl.options[i].selected > -1) {
+                    ddl.style.backgroundColor = 'LightGreen';
+                }
+            }
+        }
+
+
+
+    </script>
+}

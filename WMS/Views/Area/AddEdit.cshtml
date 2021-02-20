@@ -1,0 +1,145 @@
+﻿@model WMS.Models.AreaVM
+
+@{
+    ViewData["Title"] = "AddEdit";
+}
+
+
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="AddEdit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Id" />
+
+            <div class="form-group">
+                <label asp-for="AreaName" class="control-label"></label>
+                <input asp-for="AreaName" class="form-control" />
+                <span asp-validation-for="AreaName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="LocationId" class="control-label"></label>
+                @Html.DropDownListFor(q => q.LocationId, new SelectList(Model.Locations, "Value", "Text"), "Select Location", new { @class = "form-control" })
+
+                <span asp-validation-for="LocationId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="FacilityId" class="control-label"></label>
+                @Html.DropDownListFor(q => q.FacilityId, new SelectList(Model.Facilities, "Value", "Text"), "Select Facility", new { @class = "form-control", id = "FacilityId" })
+
+                <span asp-validation-for="FacilityId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DepartmentId" class="control-label"></label>
+                @Html.DropDownListFor(q => q.DepartmentId, new SelectList(Model.Departmnets, "Value", "Text"), "Select Department", new { @class = "form-control", id = "DepartmentId" })
+
+                <span asp-validation-for="DepartmentId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="SubDepartmentId" class="control-label"></label>
+                @Html.DropDownListFor(q => q.SubDepartmentId, new SelectList(Model.SubDepartmnets, "Value", "Text"), "Select Sub-Department", new { @class = "form-control", id = "SubDepartmentId" })
+
+                <span asp-validation-for="SubDepartmentId" class="text-danger"></span>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <input type="submit" value="Submit" class="btn btn-primary btn-block" />
+                </div>
+                <div class="col-md-6">
+                    <a asp-action="Index" class="btn btn-secondary btn-block"><i class="fa fa-list"></i> Back to List</a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+<script type="text/javascript">
+        $(document).ready(function () {
+           var locationDDL = $("#LocationId")
+            var facilityDDL = $("#FacilityId")
+            var deptDDL = $("#DepartmentId")
+            var subdeptDDL = $("#SubDepartmentId")
+
+            facilityDDL.prop('disabled', true);
+            deptDDL.prop('disabled', true);
+            subdeptDDL.prop('disabled', true);
+
+
+            locationDDL.change(function () {
+                if ($(this).val() == "0") {
+                    facilityDDL.prop('disabled', true);
+                    facilityDDL.val("0");
+                }
+                else {
+
+                    $.ajax({
+                        url: "/api/afacility/" + $(this).val(),
+                        method: "get",
+                        success: function (data) {
+                            facilityDDL.prop('disabled', false);
+                            facilityDDL.empty();
+                            facilityDDL.append($('<option/>', { value: '0', text: 'Select Facility' }));
+                            $(data).each(function (index, item) {
+                                facilityDDL.append($('<option/>', { value: item.id, text: item.facilityName }));
+                            });
+                        },
+                    });
+
+                }
+            });
+
+            facilityDDL.change(function () {
+                if ($(this).val() == "0") {
+                    deptDDL.prop('disabled', true);
+                    deptDDL.val("0");
+                }
+                else {
+
+                    $.ajax({
+                        url: "/api/adepartment/" + $(this).val(),
+                        method: "get",
+                        success: function (data) {
+                            deptDDL.prop('disabled', false);
+                            deptDDL.empty();
+                            deptDDL.append($('<option/>', { value: '0', text: 'Select Department' }));
+                            $(data).each(function (index, item) {
+                                deptDDL.append($('<option/>', { value: item.id, text: item.departmentName }));
+                            });
+                        }
+                    });
+
+                }
+            });
+
+            deptDDL.change(function () {
+                if ($(this).val() == "0") {
+                    subdeptDDL.prop('disabled', true);
+                    subdeptDDL.val("0");
+                }
+                else {
+
+                    $.ajax({
+                        url: "/api/asubdepartment/" + $(this).val(),
+                        method: "get",
+                        success: function (data) {
+                            subdeptDDL.prop('disabled', false);
+                            subdeptDDL.empty();
+                            subdeptDDL.append($('<option/>', { value: '0', text: 'Select Sub-Department' }));
+                            $(data).each(function (index, item) {
+                                subdeptDDL.append($('<option/>', { value: item.id, text: item.subDepartmentName }));
+                            });
+                        }
+                    });
+
+                }
+            });
+
+
+        });
+</script>
+}

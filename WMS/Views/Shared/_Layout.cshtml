@@ -1,0 +1,216 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using WMS.Data
+@inject SignInManager<Employee> SignInManager
+@inject UserManager<Employee> UserManager
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <title>@ViewData["Title"] - Workflow Auto</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/jquery.dataTables.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" />
+    <link rel="stylesheet" href="~/css/styles.css" />
+</head>
+
+<body class="sb-nav-fixed">
+    <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
+        <a class="navbar-brand" href="index.html">Workflow Auto</a>
+        <button class="btn btn-link btn-sm order-1 order-lg-0" id="sidebarToggle" href="#"><i class="fas fa-bars"></i></button>
+        <!-- Navbar Search-->
+        <form class="d-none d-md-inline-block form-inline ml-auto mr-0 mr-md-3 my-2 my-md-0">
+            <div class="input-group">
+                <input class="form-control" type="text" placeholder="Search for..." aria-label="Search" aria-describedby="basic-addon2" />
+                <div class="input-group-append">
+                    <button class="btn btn-primary" type="button"><i class="fas fa-search"></i></button>
+                </div>
+            </div>
+        </form>
+        <!-- Navbar-->
+        <ul class="navbar-nav ml-auto ml-md-0">
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" id="userDropdown" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-user fa-fw"></i></a>
+                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
+                    <a class="dropdown-item" href="#">Settings</a>
+                    <a class="dropdown-item" href="#">Activity Log</a>
+                    <div class="dropdown-divider"></div>
+                    @if (SignInManager.IsSignedIn(User))
+                    {
+
+                        <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+                            <button type="submit" class="dropdown-item">Logout</button>
+                        </form>
+                    }
+                    else
+                    {
+                        <a class="dropdown-item" asp-area="Identity" asp-page="/Account/Register">Register</a>
+                        <a class="dropdown-item" asp-area="Identity" asp-page="/Account/Login">Login</a>
+
+                    }
+                </div>
+            </li>
+        </ul>
+    </nav>
+    <div id="layoutSidenav">
+        <div id="layoutSidenav_nav">
+            <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
+                <div class="sb-sidenav-menu">
+                    <div class="nav">
+
+                        @if (SignInManager.IsSignedIn(User))
+                        {
+                            <div class="sb-sidenav-menu-heading">Core</div>
+
+                            <a class="nav-link" asp-controller="MyRequest" asp-action="Index">
+                                <div class="sb-nav-link-icon">
+                                    <i class="fas fa-tachometer-alt"></i>
+                                </div>
+                                Dashboard
+                            </a>
+
+                            @if (User.IsInRole("Admin"))
+                            {
+                                <div class="sb-sidenav-menu-heading">Admin</div>
+
+                                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseConfigure" aria-expanded="false" aria-controls="collapsePages">
+                                    <div class="sb-nav-link-icon"><i class="fas fa-book-open"></i></div>
+                                    Configure
+                                    <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                                </a>
+                                <div class="collapse" id="collapseConfigure" aria-labelledby="headingTwo" data-parent="#sidenavAccordion">
+                                    <nav class="sb-sidenav-menu-nested nav">
+                                        <a class="nav-link" asp-controller="Role" asp-action="Index">Roles</a>
+                                        <a class="nav-link" asp-controller="UserRoles" asp-action="Index">User Roles</a>
+                                    </nav>
+                                </div>
+
+                                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseLayouts" aria-expanded="false" aria-controls="collapseLayouts">
+                                    <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
+                                    Manage
+                                    <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                                </a>
+                                <div class="collapse" id="collapseLayouts" aria-labelledby="headingOne" data-parent="#sidenavAccordion">
+                                    <nav class="sb-sidenav-menu-nested nav">
+                                        <a class="nav-link" asp-controller="Company" asp-action="Index">Company</a>
+                                        <a class="nav-link" asp-controller="Location" asp-action="Index">Locations</a>
+                                        <a class="nav-link" asp-controller="Facility" asp-action="Index">Facilities</a>
+                                        <a class="nav-link" asp-controller="Department" asp-action="Index">Departments</a>
+                                        <a class="nav-link" asp-controller="SubDepartment" asp-action="Index">Sub-Departments</a>
+                                        <a class="nav-link" asp-controller="Area" asp-action="Index">Areas</a>
+                                        <a class="nav-link" asp-controller="Room" asp-action="Index">Rooms</a>
+                                        <a class="nav-link" asp-controller="Line" asp-action="Index">Lines</a>
+                                        <a class="nav-link" asp-controller="EquipmentType" asp-action="Index">Equipment Types</a>
+                                        <a class="nav-link" asp-controller="Equipment" asp-action="Index">Equipments</a>
+                                        <a class="nav-link" asp-controller="InstrumentType" asp-action="Index">Instrument Types</a>
+                                        <a class="nav-link" asp-controller="Instrument" asp-action="Index">Instruments</a>
+                                        <a class="nav-link" asp-controller="ITAssetType" asp-action="Index">IT Assets Types</a>
+                                        <a class="nav-link" asp-controller="ITAsset" asp-action="Index">IT Assets</a>
+                                        <a class="nav-link" asp-controller="Application" asp-action="Index">Applications</a>
+                                    </nav>
+                                </div>
+                            }
+
+                            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePages" aria-expanded="false" aria-controls="collapsePages">
+                                <div class="sb-nav-link-icon"><i class="fas fa-book-open"></i></div>
+                                Reports
+                                <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                            </a>
+                            <div class="collapse" id="collapsePages" aria-labelledby="headingTwo" data-parent="#sidenavAccordion">
+                                <nav class="sb-sidenav-menu-nested nav">
+                                    <a class="nav-link" href="#">Requesh History</a>
+                                    <a class="nav-link" href="#">Locations</a>
+                                    <a class="nav-link" href="#">Facilities</a>
+                                    <a class="nav-link" href="#">Departments</a>
+                                    <a class="nav-link" href="#">Sub-Departments</a>
+                                </nav>
+                            </div>
+
+                            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseRequests" aria-expanded="false" aria-controls="collapsePages">
+                                <div class="sb-nav-link-icon"><i class="fas fa-book-open"></i></div>
+                                Requests
+                                <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                            </a>
+                            <div class="collapse" id="collapseRequests" aria-labelledby="headingTwo" data-parent="#sidenavAccordion">
+                                <nav class="sb-sidenav-menu-nested nav">
+                                    <a class="nav-link" asp-controller="RequestType" asp-action="Index">Request Types</a>
+                                    <a class="nav-link" asp-controller="RequestWorkflow" asp-action="Index">Request Workflow</a>
+                                </nav>
+                            </div>
+
+                            <div class="sb-sidenav-menu-heading">Services</div>
+                            <a class="nav-link" asp-controller="MyRequest" asp-action="Index">
+                                <div class="sb-nav-link-icon"><i class="fas fa-chart-area"></i></div>
+                                My Request
+                            </a>
+                        }
+                        else
+                        {
+                            <div class="sb-sidenav-menu-heading">Services</div>
+                            <a class="nav-link" href="#">
+                                <div class="sb-nav-link-icon"><i class="fas fa-chart-area"></i></div>
+                                Register
+                            </a>
+                        }
+                        <a class="nav-link" href="tables.html">
+                            <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>
+                            Guide/Help
+                        </a>
+                    </div>
+                </div>
+                <div class="sb-sidenav-footer">
+                    <div class="small">Logged in as:</div>
+                    @if (SignInManager.IsSignedIn(User))
+                    {
+                        @User.Identity.Name
+                    }
+                    else
+                    {
+                        <div>Guest</div>
+                    }
+                </div>
+            </nav>
+        </div>
+        <div id="layoutSidenav_content">
+            <main>
+                <div class="container-fluid">
+                    <h1 class="mt-4">@ViewData["Title"]</h1>
+                    <ol class="breadcrumb mb-4">
+                        <li class="breadcrumb-item active">Go to Dashboard</li>
+                    </ol>
+
+
+                    @RenderBody()
+                </div>
+            </main>
+
+
+            <footer class="py-4 bg-light mt-auto">
+                <div class="container-fluid">
+                    <div class="d-flex align-items-center justify-content-between small">
+                        <div class="text-muted">Copyright &copy; WorkflowAuto 2018-@DateTime.Now.Year</div>
+                        <div>
+                            <a href="#">Privacy Policy</a>
+                            &middot;
+                            <a href="#">Terms &amp; Conditions</a>
+                        </div>
+                    </div>
+                </div>
+            </footer>
+        </div>
+    </div>
+
+
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="~/lib/datatables/js/jquery.dataTables.min.js"></script>
+    <script src="~/lib/font-awesome/js/all.min.js"></script>
+    <script src="~/js/scripts.js"></script>
+    <script src="~/js/site.js"></script>
+
+    @RenderSection("Scripts", required: false)
+</body>
+</html>
